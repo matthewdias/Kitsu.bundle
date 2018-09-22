@@ -132,7 +132,8 @@ def update_anime(type, metadata, media, force):
             except:
                 Log.Error('Error loading banner - Anime: ' + metadata.id)
 
-        update_episodes(media, metadata, force, includes['episodes'])
+        if 1 in media.seasons:
+            update_episodes(media, metadata, force, includes['episodes'])
 
         if metadata.collections is None or force:
             update_collections(media, metadata, includes['mappings'])
