@@ -4,7 +4,7 @@ This plugin will allow you to use Kitsu metadata for a Plex library.
 
 ### Installation
 
-- Download the [latest release](https://github.com/matthewdias/Kitsu.bundle/releases/latest).
+- Download and extract the [latest release](https://github.com/matthewdias/Kitsu.bundle/releases/latest).
 - Move `Kitsu.bundle` to your Plex [plugins directory](https://support.plex.tv/articles/201106098-how-do-i-find-the-plug-ins-folder/).
 - Restart Plex
 
