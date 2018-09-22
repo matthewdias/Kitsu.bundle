@@ -113,7 +113,7 @@ def update_anime(type, metadata, media, force):
                 role.name = person['attributes']['name']
                 if person['attributes']['image'] is not None:
                     role.photo = person['attributes']['image']['original']
-                if person['attributes']['role'] is not None:
+                if staff['attributes']['role'] is not None:
                     role.role = staff['attributes']['role']
 
     if (metadata.posters is None or force) and anime['posterImage'] is not None:
