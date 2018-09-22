@@ -13,8 +13,9 @@ def authenticate():
             return token
     else:
         token = login()
-        Data.Save('tvdb_expires', (datetime.utcnow() + timedelta(hours=24)).strftime('%s'))
-        Data.Save('tvdb_token', token)
+        if token is not None:
+            Data.Save('tvdb_expires', (datetime.utcnow() + timedelta(hours=24)).strftime('%s'))
+            Data.Save('tvdb_token', token)
         return token
 
 def login():
@@ -23,9 +24,13 @@ def login():
         headers = { 'Content-Type': 'application/json' },
         data = '{"apikey":"' + APIKEY + '"}'
     )
-    request.load()
-    result = JSON.ObjectFromString(request.content)
-    return result['token']
+    try:
+        request.load()
+        result = JSON.ObjectFromString(request.content)
+        return result['token']
+    except:
+        Log.Error('Error logging in to TVDB')
+
 
 def refresh(token):
     request = HTTP.Request(
@@ -35,12 +40,19 @@ def refresh(token):
             'Authorization': 'Bearer ' + token
         }
     )
-    request.load()
-    result = JSON.ObjectFromString(request.content)
-    return result['token']
+    try:
+        request.load()
+        result = JSON.ObjectFromString(request.content)
+        return result['token']
+    except:
+        Log.Error('Error refreshing TVDB token')
+
 
 def get_series_name(id):
     token = authenticate()
+    if token is None:
+        return
+
     request = HTTP.Request(
         APIURL + '/series/' + id,
         headers = {
@@ -48,6 +60,9 @@ def get_series_name(id):
             'Authorization': 'Bearer ' + token
         }
     )
-    request.load()
-    result = JSON.ObjectFromString(request.content)
-    return result['data']['seriesName']
+    try:
+        request.load()
+        result = JSON.ObjectFromString(request.content)
+        return result['data']['seriesName']
+    except:
+        Log.Error('Error getting series name from TVDB')

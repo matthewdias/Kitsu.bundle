@@ -113,19 +113,24 @@ def update_anime(type, metadata, media, force):
 
     if (metadata.posters is None or force) and anime['posterImage'] is not None:
         poster_image = anime['posterImage']
-        thumbnail = Proxy.Preview(HTTP.Request(
-            poster_image['tiny'], immediate = True
-        ).content)
-        metadata.posters[poster_image['large']] = thumbnail
+        try:
+            thumbnail = Proxy.Preview(HTTP.Request(
+                poster_image['tiny'], immediate = True
+            ).content)
+            metadata.posters[poster_image['large']] = thumbnail
+        except:
+            Log.Error('Error loading poster - Anime: ' + metadata.id)
 
     if type == 'tv':
         if (metadata.banners is None or force) and anime['coverImage'] is not None:
             cover_image = anime['coverImage']
-            thumbnail = Proxy.Preview(HTTP.Request(
-                cover_image['original'],
-                immediate = True
-            ).content)
-            metadata.banners[cover_image['original']] = thumbnail
+            try:
+                thumbnail = Proxy.Preview(HTTP.Request(
+                    cover_image['original'], immediate = True
+                ).content)
+                metadata.banners[cover_image['original']] = thumbnail
+            except:
+                Log.Error('Error loading banner - Anime: ' + metadata.id)
 
         update_episodes(media, metadata, force, includes['episodes'])
 
@@ -159,8 +164,12 @@ def update_episodes(media, metadata, force, inc_episodes):
 
             if (episode.thumbs is None or force) and ep['thumbnail'] is not None:
                 thumb_image = ep['thumbnail']['original']
-                thumbnail = Proxy.Preview(HTTP.Request(thumb_image, immediate = True).content)
-                episode.thumbs[thumb_image] = thumbnail
+                try:
+                    thumbnail = Proxy.Preview(HTTP.Request(thumb_image, immediate = True).content)
+                    episode.thumbs[thumb_image] = thumbnail
+                except:
+                    Log.Error('Error loading thumbnail - Anime:Episode: ' +
+                        metadata.id + ':' + number)
 
             if (episode.duration is None or force) and ep['length'] is not None:
                 episode.duration = ep['length'] * 60000

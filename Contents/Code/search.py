@@ -19,7 +19,11 @@ def search_anime(type, results, media, lang):
         },
         data = '{"params":"query=' + query + '&facetFilters=[' + filters + ']"}'
     )
-    request.load()
+    try:
+        request.load()
+    except:
+        Log.Error('Error searching Kitsu - Anime: ' + query)
+        return
     result = JSON.ObjectFromString(request.content)
 
     s = 100
