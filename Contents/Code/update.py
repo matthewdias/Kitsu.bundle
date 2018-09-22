@@ -66,29 +66,26 @@ def update_anime(type, metadata, media, force):
         metadata.content_rating = anime['ageRatingGuide']
 
     if metadata.studio is None or force:
-        anime_studios = filter(lambda ap: ap['attributes']['role'] == 'studio',
+        anime_studio = find_first(lambda ap: ap['attributes']['role'] == 'studio',
             includes['animeProductions'])
-        if anime_studios is not None:
-            studio_id = anime_studios[0]['relationships']['producer']['data']['id']
-            studios = filter(lambda p: p['id'] == studio_id, includes['producers'])
-            if studios is not None:
-                metadata.studio = studios[0]['attributes']['name']
+        if anime_studio is not None:
+            studio_id = anime_studio['relationships']['producer']['data']['id']
+            studio = find_first(lambda p: p['id'] == studio_id, includes['producers'])
+            if studio is not None:
+                metadata.studio = studio['attributes']['name']
 
     if metadata.roles is None or force:
         for char in includes['mediaCharacters']:
             char_id = char['relationships']['character']['data']['id']
-            characters = filter(lambda c: c['id'] == char_id, includes['characters'])
-            if characters is not None:
-                character = characters[0]
+            character = find_first(lambda c: c['id'] == char_id, includes['characters'])
+            if character is not None:
                 voice_ids = map(lambda cv: cv['id'], char['relationships']['voices']['data'])
                 voices = filter(lambda v: v['id'] in voice_ids, includes['characterVoices'])
                 if voices is not None:
                     for voice in voices:
                         person_id = voice['relationships']['person']['data']['id']
-                        people = filter(lambda p: p['id'] == person_id, includes['people'])
-                        if people is not None:
-                            person = people[0]
-
+                        person = find_first(lambda p: p['id'] == person_id, includes['people'])
+                        if person is not None:
                             role = metadata.roles.new()
                             role.name = person['attributes']['name']
                             if person['attributes']['image'] is not None:
@@ -105,10 +102,8 @@ def update_anime(type, metadata, media, force):
 
         for staff in includes['mediaStaff']:
             person_id = staff['relationships']['person']['data']['id']
-            people = filter(lambda p: p['id'] == person_id, includes['people'])
-            if people is not None:
-                person = people[0]
-
+            person = find_first(lambda p: p['id'] == person_id, includes['people'])
+            if person is not None:
                 role = metadata.roles.new()
                 role.name = person['attributes']['name']
                 if person['attributes']['image'] is not None:
@@ -146,11 +141,11 @@ def update_episodes(media, metadata, force, inc_episodes):
         number = int(number)
         episode = metadata.seasons[1].episodes[number]
 
-        episodes = filter(lambda e: e['attributes']['relativeNumber'] == number,
+        ep = find_first(lambda e: e['attributes']['relativeNumber'] == number,
             inc_episodes)
 
-        if episodes is not None:
-            ep = episodes[0]['attributes']
+        if ep is not None:
+            ep = ep['attributes']
 
             if (episode.title is None or force) and ep['canonicalTitle'] is not None:
                 episode.title = ep['canonicalTitle']
@@ -170,15 +165,21 @@ def update_episodes(media, metadata, force, inc_episodes):
             if (episode.duration is None or force) and ep['length'] is not None:
                 episode.duration = ep['length'] * 60000
 
-def update_collections(media, metadata, mappings):
+def update_collections(media, metadata, maps):
     tvdb = None
-    maps = filter(lambda m: m['attributes']['externalSite'] == 'thetvdb', mappings)
-    if maps is not None:
-        tvdb = maps[0]['attributes']['externalId'].split('/')[0]
+    mapping = find_first(lambda m: m['attributes']['externalSite'] == 'thetvdb', maps)
+    if mapping is not None:
+        tvdb = mapping['attributes']['externalId'].split('/')[0]
     else:
-        maps = filter(lambda m: m['attributes']['externalSite'] == 'thetvdb/series', mappings)
-        if maps is not None:
-            tvdb = maps[0]['attributes']['externalId']
+        mapping = find_first(lambda m: m['attributes']['externalSite'] == 'thetvdb/series', maps)
+        if mapping is not None:
+            tvdb = mapping['attributes']['externalId']
     if tvdb is not None:
         series_name = get_series_name(tvdb)
         metadata.collections = [series_name]
+
+def find_first(p, list):
+    for i in list:
+        if p(i):
+            return i
+    return None
