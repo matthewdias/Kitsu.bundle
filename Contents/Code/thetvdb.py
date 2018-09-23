@@ -13,12 +13,12 @@ def authenticate():
         else:
             return token
     else:
-        token = login()
-        if token is not None:
-            Data.Save('tvdb_expires',
-                      str(mktime((datetime.now() + timedelta(hours=24)).timetuple())))
-            Data.Save('tvdb_token', token)
-        return token
+        return login()
+
+def save_token(token):
+    Data.Save('tvdb_expires',
+              str(mktime((datetime.now() + timedelta(hours=24)).timetuple())))
+    Data.Save('tvdb_token', token)
 
 def login():
     request = HTTP.Request(
@@ -28,8 +28,9 @@ def login():
     )
     try:
         request.load()
-        result = JSON.ObjectFromString(request.content)
-        return result['token']
+        token = JSON.ObjectFromString(request.content)['token']
+        save_token(token)
+        return token
     except:
         Log.Error('Error logging in to TVDB')
 
@@ -44,8 +45,9 @@ def refresh(token):
     )
     try:
         request.load()
-        result = JSON.ObjectFromString(request.content)
-        return result['token']
+        token = JSON.ObjectFromString(request.content)['token']
+        save_token(token)
+        return token
     except:
         Log.Error('Error refreshing TVDB token')
 
