@@ -59,7 +59,8 @@ def update_anime(type, metadata, media, force):
         metadata.summary = anime['synopsis']
 
     if (metadata.originally_available_at is None or force) and anime['startDate'] is not None:
-        start_date = datetime.strptime(anime['startDate'], '%Y-%m-%d')
+        split = anime['startDate'].split('-')
+        start_date = datetime(split[0], split[1], split[2])
         metadata.originally_available_at = start_date
 
     if (metadata.content_rating is None or force) and anime['ageRatingGuide'] is not None:
@@ -160,7 +161,8 @@ def update_episodes(media, metadata, force, inc_episodes):
                 episode.summary = ep['synopsis']
 
             if (episode.originally_available_at is None or force) and ep['airdate'] is not None:
-                air_date = datetime.strptime(ep['airdate'], '%Y-%m-%d')
+                split = ep['airdate'].split('-')
+                air_date = datetime(split[0], split[1], split[2])
                 episode.originally_available_at = air_date
 
             if (episode.thumbs is None or force) and ep['thumbnail'] is not None:

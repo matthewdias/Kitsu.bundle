@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from time import mktime
 
 APIKEY='88A8042EC60E49F5'
 APIURL='https://api.thetvdb.com'
@@ -6,15 +7,16 @@ APIURL='https://api.thetvdb.com'
 def authenticate():
     token = Data.Load('tvdb_token')
     if token is not None:
-        expires = datetime.utcfromtimestamp(float(Data.Load('tvdb_expires')))
-        if datetime.utcnow() > expires:
+        expires = datetime.fromtimestamp(float(Data.Load('tvdb_expires')))
+        if datetime.now() > expires:
             return refresh(token)
         else:
             return token
     else:
         token = login()
         if token is not None:
-            Data.Save('tvdb_expires', (datetime.utcnow() + timedelta(hours=24)).strftime('%s'))
+            Data.Save('tvdb_expires',
+                str(mktime((datetime.now() + timedelta(hours=24)).timetuple()))
             Data.Save('tvdb_token', token)
         return token
 
