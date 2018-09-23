@@ -59,7 +59,7 @@ def update_anime(type, metadata, media, force):
         metadata.summary = anime['synopsis']
 
     if (metadata.originally_available_at is None or force) and anime['startDate'] is not None:
-        split = anime['startDate'].split('-')
+        split = map(lambda s: int(s), anime['startDate'].split('-'))
         start_date = datetime(split[0], split[1], split[2])
         metadata.originally_available_at = start_date
 
@@ -161,7 +161,7 @@ def update_episodes(media, metadata, force, inc_episodes):
                 episode.summary = ep['synopsis']
 
             if (episode.originally_available_at is None or force) and ep['airdate'] is not None:
-                split = ep['airdate'].split('-')
+                split = map(lambda s: int(s), ep['airdate'].split('-'))
                 air_date = datetime(split[0], split[1], split[2])
                 episode.originally_available_at = air_date
 

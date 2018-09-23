@@ -16,7 +16,7 @@ def authenticate():
         token = login()
         if token is not None:
             Data.Save('tvdb_expires',
-                str(mktime((datetime.now() + timedelta(hours=24)).timetuple()))
+                      str(mktime((datetime.now() + timedelta(hours=24)).timetuple())))
             Data.Save('tvdb_token', token)
         return token
 
