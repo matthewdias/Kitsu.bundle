@@ -29,7 +29,7 @@ class KitsuMovie(Agent.Movies):
     contributes_to = None
 
     def search(self, results, media, lang, manual):
-        search_anime('movies', results, media, lang)
+        search_anime('movie', results, media, lang)
 
     def update(self, metadata, media, lang, force):
         update_anime('movie', metadata, media, force)
