@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from time import mktime
 
-APIKEY='88A8042EC60E49F5'
-APIURL='https://api.thetvdb.com'
+APIKEY = '88A8042EC60E49F5'
+APIURL = 'https://api.thetvdb.com'
 
 def authenticate():
     token = Data.Load('tvdb_token')
