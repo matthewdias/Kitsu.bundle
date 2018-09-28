@@ -8,7 +8,7 @@ def search_anime(type, results, media, lang):
 
     filters = '\\"kind:anime\\"'
     if type == 'movie':
-        filters = filters = ',\\"subtype:movie\\"'
+        filters = filters + ',\\"subtype:movie\\"'
 
     request = HTTP.Request(
         'https://' + ALGOLIA_APP_ID + '-dsn.algolia.net/1/indexes/production_media/query',
