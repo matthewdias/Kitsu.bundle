@@ -151,7 +151,11 @@ def update_episodes(media, metadata, force, inc_episodes):
         ep = find_first(lambda e: e['attributes']['relativeNumber'] == number,
             inc_episodes)
 
-        if ep is not None:
+        if ep is None:
+            ep = find_first(lambda e: e['attributes']['number'] == number, inc_episodes)
+            if ep is None:
+                return
+
             ep = ep['attributes']
 
             if (episode.title is None or force) and ep['canonicalTitle'] is not None:
