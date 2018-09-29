@@ -1,5 +1,6 @@
 from datetime import datetime
 from thetvdb import get_series_name
+from kitsu import authenticate
 
 VOICE_LANGUAGES = {
     'de': 'German',
@@ -15,14 +16,20 @@ VOICE_LANGUAGES = {
 }
 
 def update_anime(type, metadata, media, force):
+    headers = {
+        'Accept': 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json'
+    }
+
+    token = authenticate()
+    if token is not None:
+        headers['Authorization'] = 'Bearer ' + token
+
     request = HTTP.Request(
         'https://kitsu.io/api/edge/anime/' + metadata.id +
             '?include=categories,episodes,animeProductions.producer,' +
             'characters.character,characters.voices.person,staff.person,mappings',
-        headers = {
-            'Accept': 'application/vnd.api+json',
-            'Content-Type': 'application/vnd.api+json'
-        }
+        headers = headers
     )
     request.load()
     result = JSON.ObjectFromString(request.content)

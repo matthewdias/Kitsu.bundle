@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": "kitsu_username",
+    "label": "Kitsu Email (Sign in to enable NSFW metadata if you've enabled it on Kitsu)",
+    "type": "text",
+    "default": ""
+  },
+  {
+    "id": "kitsu_password",
+    "label": "Kitsu Password",
+    "type": "text",
+    "option": "hidden",
+    "default": "",
+    "secure": "true"
+  }
+]

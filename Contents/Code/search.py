@@ -1,5 +1,6 @@
+from kitsu import algolia_key
+
 ALGOLIA_APP_ID = 'AWQO5J657S'
-ALGOLIA_API_KEY = 'NzYxODA5NmY0ODRjYTRmMzQ2YjMzNzNmZmFhNjY5ZGRmYjZlMzViN2VkZDIzMGUwYjM5ZjQ5NjAwZGI4ZTc5MHJlc3RyaWN0SW5kaWNlcz1wcm9kdWN0aW9uX21lZGlhJmZpbHRlcnM9Tk9UK2FnZVJhdGluZyUzQVIxOA'
 
 def search_anime(type, results, media, lang):
     query = media.show if type == 'tv' else media.name
@@ -15,7 +16,7 @@ def search_anime(type, results, media, lang):
         headers = {
             'Content-Type': 'application/json',
             'X-Algolia-Application-Id': ALGOLIA_APP_ID,
-            'X-Algolia-API-Key': ALGOLIA_API_KEY
+            'X-Algolia-API-Key': algolia_key()
         },
         data = '{"params":"query=' + query + '&facetFilters=[' + filters + ']"}'
     )
