@@ -10,7 +10,7 @@ This plugin will allow you to use Kitsu metadata for a Plex library.
 
 ### Usage
 
-To use the agent, create a new library in Plex and select Kitsu as the metadata agent. There is a TV shows agent, and a movies agent.
+To use the agent, create a new library in Plex and select Kitsu as the metadata agent. There is a TV shows agent, and a movies agent. If you want to enable results for NSFW media, you can sign in to a Kitsu account that has the 'Show Adult Content' option enabled in settings.
 
 #### Convention
 
