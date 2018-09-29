@@ -163,30 +163,30 @@ def update_episodes(media, metadata, force, inc_episodes):
             if ep is None:
                 return
 
-            ep = ep['attributes']
+        ep = ep['attributes']
 
-            if (episode.title is None or force) and ep['canonicalTitle'] is not None:
-                episode.title = ep['canonicalTitle']
+        if (episode.title is None or force) and ep['canonicalTitle'] is not None:
+            episode.title = ep['canonicalTitle']
 
-            if (episode.summary is None or force) and ep['synopsis'] is not None:
-                episode.summary = ep['synopsis']
+        if (episode.summary is None or force) and ep['synopsis'] is not None:
+            episode.summary = ep['synopsis']
 
-            if (episode.originally_available_at is None or force) and ep['airdate'] is not None:
-                split = map(lambda s: int(s), ep['airdate'].split('-'))
-                air_date = datetime(split[0], split[1], split[2])
-                episode.originally_available_at = air_date
+        if (episode.originally_available_at is None or force) and ep['airdate'] is not None:
+            split = map(lambda s: int(s), ep['airdate'].split('-'))
+            air_date = datetime(split[0], split[1], split[2])
+            episode.originally_available_at = air_date
 
-            if (episode.thumbs is None or force) and ep['thumbnail'] is not None:
-                thumb_image = ep['thumbnail']['original']
-                try:
-                    thumbnail = Proxy.Preview(HTTP.Request(thumb_image, immediate = True).content)
-                    episode.thumbs[thumb_image] = thumbnail
-                except:
-                    Log.Error('Error loading thumbnail - Anime:Episode: ' +
-                        metadata.id + ':' + number)
+        if (episode.thumbs is None or force) and ep['thumbnail'] is not None:
+            thumb_image = ep['thumbnail']['original']
+            try:
+                thumbnail = Proxy.Preview(HTTP.Request(thumb_image, immediate = True).content)
+                episode.thumbs[thumb_image] = thumbnail
+            except:
+                Log.Error('Error loading thumbnail - Anime:Episode: ' +
+                    metadata.id + ':' + number)
 
-            if (episode.duration is None or force) and ep['length'] is not None:
-                episode.duration = ep['length'] * 60000
+        if (episode.duration is None or force) and ep['length'] is not None:
+            episode.duration = ep['length'] * 60000
 
 def update_collections(media, metadata, maps):
     tvdb = None
