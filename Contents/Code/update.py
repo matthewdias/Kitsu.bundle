@@ -141,7 +141,7 @@ def update_anime(type, metadata, media, force):
                 Log.Error('Error loading banner - Anime: ' + metadata.id)
 
         if 1 in media.seasons:
-            update_episodes(media, metadata, force, includes['episodes'])
+            update_episodes(media, metadata, force, anime, includes['episodes'])
 
         if metadata.collections is None or force:
             update_collections(media, metadata, includes['mappings'])
@@ -150,10 +150,36 @@ def update_anime(type, metadata, media, force):
         if (metadata.year is None or force) and anime['startDate'] is not None:
             metadata.year = int(anime['startDate'][:4])
 
-def update_episodes(media, metadata, force, inc_episodes):
+def update_episodes(media, metadata, force, anime, inc_episodes):
     for number in media.seasons[1].episodes:
         number = int(number)
         episode = metadata.seasons[1].episodes[number]
+
+        if anime['subtype'] == 'movie':
+            if (episode.title is None or force) and metadata.title is not None:
+                episode.title = metadata.title
+
+            if (episode.summary is None or force) and metadata.summary is not None:
+                episode.summary = metadata.summary
+
+            if (episode.originally_available_at is None or force):
+                if metadata.originally_available_at is not None:
+                    episode.originally_available_at = metadata.originally_available_at
+
+            if (episode.thumbs is None or force) and anime['posterImage'] is not None:
+                poster_image = anime['posterImage']
+                try:
+                    thumbnail = Proxy.Preview(HTTP.Request(
+                        poster_image['tiny'], immediate = True
+                    ).content)
+                    episode.thumbs[poster_image['large']] = thumbnail
+                except:
+                    Log.Error('Error loading poster - Anime: ' + metadata.id)
+
+            if (episode.duration is None or force) and metadata.duration is not None:
+                episode.duration = metadata.duration
+
+            return
 
         ep = find_first(lambda e: e['attributes']['relativeNumber'] == number,
             inc_episodes)
