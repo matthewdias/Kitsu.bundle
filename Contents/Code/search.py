@@ -8,8 +8,9 @@ def search_anime(type, results, media, lang):
         query += ' (' + media.year + ')'
 
     filters = '\\"kind:anime\\"'
-    if type == 'movie':
-        filters = filters + ',\\"subtype:movie\\"'
+    # disable searching for movies with tv agent
+    # if type == 'movie':
+        # filters = filters + ',\\"subtype:movie\\"'
 
     request = HTTP.Request(
         'https://' + ALGOLIA_APP_ID + '-dsn.algolia.net/1/indexes/production_media/query',
