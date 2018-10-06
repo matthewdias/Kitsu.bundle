@@ -12,5 +12,12 @@
     "option": "hidden",
     "default": "",
     "secure": "true"
+  },
+  {
+    "id": "title_language",
+    "label": "Title Language Preference",
+    "type": "enum",
+    "values": ["English", "Romanized", "Canonical"],
+    "default": "Canonical"
   }
 ]

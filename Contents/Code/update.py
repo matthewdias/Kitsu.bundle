@@ -60,7 +60,13 @@ def update_anime(type, metadata, media, force):
         metadata.rating = float(anime['averageRating']) / 10
 
     if (metadata.title is None or force) and anime['canonicalTitle'] is not None:
-        metadata.title = anime['canonicalTitle']
+        title_language = Prefs['title_language']
+        if title_language == 'English' and anime['titles']['en'] is not None:
+            metadata.title = anime['titles']['en']
+        elif title_language == 'Romanized' and anime['titles']['en_jp'] is not None:
+            metadata.title = anime['titles']['en_jp']
+        else:
+            metadata.title = anime['canonicalTitle']
 
     if (metadata.summary is None or force) and anime['synopsis'] is not None:
         metadata.summary = anime['synopsis']
