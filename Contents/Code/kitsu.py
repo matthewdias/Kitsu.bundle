@@ -6,18 +6,25 @@ CLIENT_ID = 'dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd'
 CLIENT_SECRET = '54d7307928f63414defd96399fc31ba847961ceaecef3a5fd93144e960c0e151'
 
 def authenticate():
-    token = Data.Load('kitsu_token')
-    if token is not None:
-        expires = datetime.fromtimestamp(float(Data.Load('kitsu_expires')))
-        if datetime.now() > expires:
-            return refresh(Data.Load('kitsu_refresh'))
-        else:
-            return token
-
     username = Prefs['kitsu_username']
     password = Prefs['kitsu_password']
-    if username and password:
+
+    if username is None or password is None:
+        Data.Remove('kitsu_token')
+        Data.Remove('kitsu_refresh')
+        Data.Remove('kitsu_token')
+        Data.Remove('algolia_media')
+        return
+
+    token = Data.Load('kitsu_token')
+    if token is None:
         return login(username, password)
+
+    expires = datetime.fromtimestamp(float(Data.Load('kitsu_expires')))
+    if datetime.now() > expires:
+        return refresh(Data.Load('kitsu_refresh'))
+
+    return token
 
 def save_token(token):
     Data.Save('kitsu_expires',
@@ -77,12 +84,11 @@ def algolia_key():
         'Content-Type': 'application/vnd.api+json'
     }
 
-    if Prefs['kitsu_password'] is None:
-        return Data.Load('algolia_anon')
-    else:
-        token = authenticate()
-        if token is None:
-            return Data.Load('algolia_anon')
+    token = authenticate()
+    if token is None:
+        anon_key = Data.Load('algolia_anon')
+        if anon_key is not None:
+            return anon_key
 
     headers['Authorization'] = 'Bearer ' + token
     request = HTTP.Request(
@@ -106,14 +112,10 @@ def get_anime(id):
         'Content-Type': 'application/vnd.api+json'
     }
 
-    if Prefs['kitsu_password'] is None:
-        return Data.Load('algolia_anon')
-    else:
-        token = authenticate()
-        if token is None:
-            return Data.Load('algolia_anon')
+    token = authenticate()
+    if token is not None:
+        headers['Authorization'] = 'Bearer ' + token
 
-    headers['Authorization'] = 'Bearer ' + token
     request = HTTP.Request(
         'https://kitsu.io/api/edge/anime/' + id +
             '?include=categories,episodes,animeProductions.producer,' +
