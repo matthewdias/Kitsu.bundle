@@ -53,7 +53,6 @@ def login(username, password):
     except:
         Log.Error('Error logging in to Kitsu')
 
-
 def refresh(refresh_token):
     request = HTTP.Request(
         OAUTHURL,
