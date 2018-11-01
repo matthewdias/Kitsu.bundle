@@ -77,9 +77,10 @@ def refresh(refresh_token):
         return login(username, password)
 
 def algolia_key():
-    media_key = Data.Load('algolia_media')
-    if media_key is not None:
-        return media_key
+    if Prefs['kitsu_username'] is not None and Prefs['kitsu_password'] is not None:
+        media_key = Data.Load('algolia_media')
+        if media_key is not None:
+            return media_key
 
     headers = {
         'Accept': 'application/vnd.api+json',
