@@ -73,6 +73,9 @@ def refresh(refresh_token):
         return token['access_token']
     except:
         Log.Error('Error refreshing Kitsu token')
+        username = Prefs['kitsu_username']
+        password = Prefs['kitsu_password']
+        return login(username, password)
 
 def algolia_key():
     media_key = Data.Load('algolia_media')
