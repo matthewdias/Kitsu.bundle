@@ -91,8 +91,9 @@ def algolia_key():
         anon_key = Data.Load('algolia_anon')
         if anon_key is not None:
             return anon_key
+    else:
+        headers['Authorization'] = 'Bearer ' + token
 
-    headers['Authorization'] = 'Bearer ' + token
     request = HTTP.Request(
         APIURL + '/algolia-keys',
         headers = headers
