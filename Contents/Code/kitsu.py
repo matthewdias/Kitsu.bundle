@@ -77,14 +77,14 @@ def algolia_key():
         'Content-Type': 'application/vnd.api+json'
     }
 
-    token = authenticate()
-    if token is not None:
-        headers['Authorization'] = 'Bearer ' + token
+    if Prefs['kitsu_password'] is None:
+        return Data.Load('algolia_anon')
     else:
-        anon_key = Data.Load('algolia_anon')
-        if anon_key is not None:
-            return anon_key
+        token = authenticate()
+        if token is None:
+            return Data.Load('algolia_anon')
 
+    headers['Authorization'] = 'Bearer ' + token
     request = HTTP.Request(
         APIURL + '/algolia-keys',
         headers = headers
@@ -99,3 +99,29 @@ def algolia_key():
         return media_key
     except:
         Log.Error('Error getting Algolia key')
+
+def get_anime(id):
+    headers = {
+        'Accept': 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json'
+    }
+
+    if Prefs['kitsu_password'] is None:
+        return Data.Load('algolia_anon')
+    else:
+        token = authenticate()
+        if token is None:
+            return Data.Load('algolia_anon')
+
+    headers['Authorization'] = 'Bearer ' + token
+    request = HTTP.Request(
+        'https://kitsu.io/api/edge/anime/' + id +
+            '?include=categories,episodes,animeProductions.producer,' +
+            'characters.character,characters.voices.person,staff.person,mappings',
+        headers = headers
+    )
+    try:
+        request.load()
+        return JSON.ObjectFromString(request.content)
+    except:
+        Log.Error('Error getting anime info')
