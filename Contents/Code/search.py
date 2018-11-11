@@ -4,6 +4,7 @@ ALGOLIA_APP_ID = 'AWQO5J657S'
 
 def search_anime(type, results, media, lang):
     query = media.show if type == 'tv' else media.name
+    query = String.Quote(query)
     if media.year is not None:
         query += ' (' + media.year + ')'
 
