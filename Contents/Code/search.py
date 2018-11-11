@@ -36,7 +36,7 @@ def search_anime(type, results, media, lang):
             name = name + ' (' + h['subtype'] + ')'
         results.Append(MetadataSearchResult(
             id = str(h['id']),
-            name = h['canonicalTitle'],
+            name = name,
             year = h['year'],
             score = s,
             lang = lang
